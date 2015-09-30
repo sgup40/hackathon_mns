@@ -87,7 +87,6 @@ var recognizing = false;
 var ignore_onend;
 var start_timestamp;
 if (!('webkitSpeechRecognition' in window)) {
-  console.log('sada luck');
   upgrade();
 } else {
   start_button.style.display = 'inline-block';
@@ -96,7 +95,6 @@ if (!('webkitSpeechRecognition' in window)) {
   recognition.interimResults = true;
 
   recognition.onstart = function() {
-    console.log('start function called');
     recognizing = true;
     showInfo('info_speak_now');
     start_img.src = 'mic-animate.gif';
@@ -104,19 +102,16 @@ if (!('webkitSpeechRecognition' in window)) {
 
   recognition.onerror = function(event) {
     if (event.error == 'no-speech') {
-    console.log('error function called');
       start_img.src = 'mic.gif';
       showInfo('info_no_speech');
       ignore_onend = true;
     }
     if (event.error == 'audio-capture') {
-    console.log('audio capture function called'); 
       start_img.src = 'mic.gif';
       showInfo('info_no_microphone');
       ignore_onend = true;
     }
     if (event.error == 'not-allowed') {
-      console.log('not allowed function called'); 
       if (event.timeStamp - start_timestamp < 100) {
         showInfo('info_blocked');
       } else {
@@ -127,35 +122,22 @@ if (!('webkitSpeechRecognition' in window)) {
   };
 
   recognition.onend = function() {
-    console.log('end function fdsdsfdsf');
     recognizing = false;
     if (ignore_onend) {
-    console.log('end function ignore on end');
-      
       return;
     }
     start_img.src = 'mic.gif';
-    console.log('end function 0');
-     console.log('pahan'+final_transcript + !final_transcript); 
     if (!final_transcript) {
       showInfo('info_start');
-      console.log('end function 01');
       return;
     }
-    console.log('end function 1');
     showInfo('');
-    console.log('end function 2');
     if (window.getSelection) {
-
-      console.log('window selected');
       window.getSelection().removeAllRanges();
       var range = document.createRange();
       range.selectNode(document.getElementById('final_span'));
       window.getSelection().addRange(range);
-        console.log('window Ended');
-      
     }
-    console.log('end function 4');
     if (create_email) {
       create_email = false;
       createEmail();
@@ -163,38 +145,17 @@ if (!('webkitSpeechRecognition' in window)) {
   };
 
   recognition.onresult = function(event) {
-    console.log("resut done");
-    //alert("1");
     var interim_transcript = '';
-    console.log("resut done 2");
-    
     for (var i = event.resultIndex; i < event.results.length; ++i) {
-      console.log("resut done 3");
-    
       if (event.results[i].isFinal) {
-        console.log("resut done 4");
-    
         final_transcript += event.results[i][0].transcript;
-        console.log("resut done 5");
-    
       } else {
-        console.log("resut done 6");
-    
         interim_transcript += event.results[i][0].transcript;
-
-        console.log("resut done 7");
-    
       }
     }
-    //alert("2");
-    console.log('final transaction before capitalize'+capitalize(final_transcript));
-    console.log('interim transaction after libebreak'+linebreak(interim_transcript));
-    
     final_transcript = capitalize(final_transcript);
     final_span.innerHTML = linebreak(final_transcript);
     interim_span.innerHTML = linebreak(interim_transcript);
-    console.log('final transaction'+linebreak(final_transcript));
-    console.log('interim transaction'+linebreak(interim_transcript));
     if (final_transcript || interim_transcript) {
       showButtons('inline-block');
     }
@@ -224,7 +185,7 @@ function createEmail() {
   }
   var subject = encodeURI(final_transcript.substring(0, n));
   var body = encodeURI(final_transcript.substring(n + 1));
-  window.location.href = 'mailto:?subject=' + subject + '&body=' + body;
+  window.open('mailto:?subject=' + subject + '&body=' + body);
 }
 
 function copyButton() {
@@ -265,7 +226,6 @@ function startButton(event) {
   showInfo('info_allow');
   showButtons('none');
   start_timestamp = event.timeStamp;
-  console.log('timeStamp'+start_timestamp);
 }
 
 function showInfo(s) {
@@ -292,3 +252,10 @@ function showButtons(style) {
   copy_info.style.display = 'none';
   email_info.style.display = 'none';
 }
+
+document.getElementById("start_button").addEventListener("click", startButton);
+document.getElementById("copy_button").addEventListener("click", copyButton);
+document.getElementById("email_button").addEventListener("click", emailButton);
+document.getElementById("select_language").addEventListener("change", updateCountry);
+
+

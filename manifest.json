@@ -1,15 +1,14 @@
 {
   "manifest_version": 2,
-
-  "name": "Search M&S",
-  "description": "Search for a product on M&S",
-  "version": "1.0",
-
-  "browser_action": {
-    "default_icon": "images/icon.png",
-    "default_popup": "webspeechdemo.html"
+  "name": "WebSpeechAPI MnS",
+  "version": "1",
+  "permissions": ["audioCapture"],
+  "app": {
+    "background": {
+      "scripts": ["main.js"]
+    }
   },
-  "permissions": [
-  "tabs"
-  ]
+  "minimum_chrome_version": "25"
+
 }
+
